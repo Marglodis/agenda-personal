@@ -28,7 +28,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvTituloCarritoItem"
+                android:id="@+id/tvTitleEvent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Titulo del Evento"
@@ -38,7 +38,7 @@
                 android:ellipsize="end" />
 
             <TextView
-                android:id="@+id/tvCantidadCarritoItem"
+                android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -56,7 +56,7 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnQuitarCarrito"
+            android:id="@+id/btnQuitarEvento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

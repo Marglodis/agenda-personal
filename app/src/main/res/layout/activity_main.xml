@@ -3,13 +3,15 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:layout_marginTop="36dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:ignore="ExtraText">
 
         <EditText
             android:id="@+id/etTitle"
@@ -17,6 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             />
+        <EditText
+            android:id="@+id/etDate"
+            android:hint="@string/fecha"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+
         <EditText
             android:id="@+id/etDescription"
             android:hint="@string/descripcion"
@@ -29,6 +37,7 @@
             android:layout_height="wrap_content"
             android:text="@string/agregar_evento"/>
 
+        <!-- Lista de eventos -->
         <LinearLayout
             android:id="@+id/eventsListContainer"
             android:layout_width="match_parent"

@@ -13,6 +13,10 @@ object EventManager {
         events.add(event)
     }
 
+    fun removeEvent(event: Event) {
+        events.remove(event)
+    }
+
     fun getAllEvents() = events.toList()
 
     fun getSortedEvents() = events.sortedBy { it.date }

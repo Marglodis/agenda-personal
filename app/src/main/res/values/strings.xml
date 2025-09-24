@@ -3,4 +3,5 @@
     <string name="agregar_evento">Agregar Evento</string>
     <string name="descripcion">Descripción (opcional)</string>
     <string name="titulo_evento">Título del evento</string>
+    <string name="fecha">Fecha evento</string>
 </resources>
