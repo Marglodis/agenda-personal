@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Agenda Personal</string>
+    <string name="agregar_evento">Agregar Evento</string>
+    <string name="descripcion">Descripción (opcional)</string>
+    <string name="titulo_evento">Título del evento</string>
 </resources>
