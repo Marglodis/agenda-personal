@@ -1,4 +1,4 @@
-package com.mtovar.model;
+package com.mtovar.agendapersonal.model;
 
 import java.util.UUID;
 
