@@ -12,7 +12,6 @@ object EventManager {
     fun addEvent(event: Event) {
         events.add(event)
     }
-
     fun removeEvent(event: Event) {
         events.remove(event)
     }
