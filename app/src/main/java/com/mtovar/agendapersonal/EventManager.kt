@@ -1,6 +1,7 @@
 package com.mtovar.agendapersonal
 
 import com.mtovar.agendapersonal.model.Event
+import com.mtovar.agendapersonal.util.orEmptyIfNull
 
 /***
  * Clase para gestionar eventos de forma centralizada para luego mostrarlos en la UI
@@ -21,5 +22,5 @@ object EventManager {
     fun getSortedEvents() = events.sortedBy { it.date }
 
     fun getEventsByTitle(query: String) =
-        events.filter { it.title.contains(query, ignoreCase = true) }
+        events.filter { it.title.contains(query.orEmptyIfNull(), ignoreCase = true) }
 }

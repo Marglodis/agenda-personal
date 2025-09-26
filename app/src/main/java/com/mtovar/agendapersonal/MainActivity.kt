@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
 import com.mtovar.agendapersonal.model.Event
+import com.mtovar.agendapersonal.util.orEmptyIfNull
 import com.mtovar.agendapersonal.util.safeText
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                val query = s?.toString()?.trim() ?: ""
+                val query = s?.toString()?.trim().orEmptyIfNull()
                 if (query.isEmpty()) {
                     displayEvents() // Mostrar todos los eventos
                 } else {
@@ -70,8 +71,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEmptySearchResults() {
-        binding.tvEmptyState.text = "No se encontraron resultados para la búsqueda"
-        binding.tvEmptyState.visibility = View.VISIBLE
+        binding.tvEmptyState.apply {
+            text = "No se encontraron resultados para la búsqueda"
+            visibility = View.VISIBLE
+        }
         binding.eventsListContainer.visibility = View.GONE
     }
 
@@ -143,8 +146,8 @@ class MainActivity : AppCompatActivity() {
     private fun handleAddEvent() {
 
         val title = binding.etTitle.safeText()
-        val description = binding.etDescription.text?.toString()
-            ?.takeIf { it.isNotBlank() } // Null Safety: puede ser null
+        val description = binding.etDescription.text?.toString().orEmptyIfNull() // Uso de la extensión de String
+            .takeIf { it.isNotBlank() } // Null Safety: puede ser null
         val date = binding.etDate.safeText()
 
         // Validación mejorada con feedback a usuario
