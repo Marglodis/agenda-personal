@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Botón para limpiar búsqueda
-        binding.btnClearSearch.setOnClickListener {
+       /* binding.btnClearSearch.setOnClickListener {
             binding.etSearch.text?.clear()
-        }
+        }*/
     }
 
     private fun displayFilteredEvents(query: String) {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             showEmptySearchResults()
             return
         }
-        binding.tvEmptyState.visibility = View.GONE
+        binding.emptyStateContainer.visibility = View.GONE
         binding.eventsListContainer.visibility = View.VISIBLE
 
         filteredEvents.forEach { event ->
@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEmptySearchResults() {
-        binding.tvEmptyState.apply {
-            text = "No se encontraron resultados para la búsqueda"
+        binding.emptyStateContainer.apply {
+           // text = "No se encontraron resultados para la búsqueda"
             visibility = View.VISIBLE
         }
         binding.eventsListContainer.visibility = View.GONE
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             showEmptyList()
             return
         }
-           binding.tvEmptyState.visibility = View.GONE
+           binding.emptyStateContainer.visibility = View.GONE
            binding.eventsListContainer.visibility = View.VISIBLE
         events.forEach { event ->
             val eventView = createEventView(event)
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun showEmptyList() {
-        binding.tvEmptyState.visibility = View.VISIBLE
+        binding.emptyStateContainer.visibility = View.VISIBLE
         binding.eventsListContainer.visibility = View.GONE
     }
 
