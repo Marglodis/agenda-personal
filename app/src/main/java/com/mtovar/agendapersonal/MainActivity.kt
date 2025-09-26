@@ -1,6 +1,8 @@
 package com.mtovar.agendapersonal
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -22,7 +24,55 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupEventListeners()
+        setupSearch()
         displayEvents()
+    }
+
+    private fun setupSearch() {
+        // Configurar búsqueda en tiempo real
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString()?.trim() ?: ""
+                if (query.isEmpty()) {
+                    displayEvents() // Mostrar todos los eventos
+                } else {
+                    displayFilteredEvents(query)
+                }
+            }
+        })
+
+        // Botón para limpiar búsqueda
+        binding.btnClearSearch.setOnClickListener {
+            binding.etSearch.text?.clear()
+        }
+    }
+
+    private fun displayFilteredEvents(query: String) {
+        val filteredEvents = EventManager.getEventsByTitle(query)
+
+        // Limpiar contenedor antes de añadir los filtrados
+        binding.eventsListContainer.removeAllViews()
+
+        if (filteredEvents.isEmpty()) {
+            showEmptySearchResults()
+            return
+        }
+        binding.tvEmptyState.visibility = View.GONE
+        binding.eventsListContainer.visibility = View.VISIBLE
+
+        filteredEvents.forEach { event ->
+            val eventView = createEventView(event)
+            binding.eventsListContainer.addView(eventView)
+        }
+    }
+
+    private fun showEmptySearchResults() {
+        binding.tvEmptyState.text = "No se encontraron resultados para la búsqueda"
+        binding.tvEmptyState.visibility = View.VISIBLE
+        binding.eventsListContainer.visibility = View.GONE
     }
 
     private fun displayEvents() {
@@ -87,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddEvent.setOnClickListener {
             handleAddEvent()
         }
+
     }
 
     private fun handleAddEvent() {
@@ -143,6 +194,3 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
-
-
-

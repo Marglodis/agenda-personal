@@ -5,4 +5,6 @@
     <string name="titulo_evento">Título del evento</string>
     <string name="fecha">Fecha evento</string>
     <string name="no_events">No hay eventos programados</string>
+    <string name="buscar_evento">Buscar evento por título</string>
+    <string name="clear">Limpiar</string>
 </resources>
