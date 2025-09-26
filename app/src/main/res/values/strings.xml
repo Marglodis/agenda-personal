@@ -4,7 +4,10 @@
     <string name="descripcion">Descripción (opcional)</string>
     <string name="titulo_evento">Título del evento</string>
     <string name="fecha">Fecha evento</string>
-    <string name="no_events">No hay eventos programados</string>
     <string name="buscar_evento">Buscar evento por título</string>
     <string name="clear">Limpiar</string>
+    <string name="no_event">No hay eventos</string>
+    <string name="icono_relativo">Icono</string>
+    <string name="add_event">Agregar Nuevo Evento</string>
+    <string name="comment_add_event">Agrega tu primer evento para comenzar</string>
 </resources>

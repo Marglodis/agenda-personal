@@ -40,77 +40,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Estadísticas rápidas -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvTotalEvents"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="@color/primary_blue"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Eventos Totales"
-                            android:textColor="@color/medium_gray"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="16dp"
-                        android:background="@color/light_gray" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvUpcomingEvents"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="@color/accent_orange"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Próximos"
-                            android:textColor="@color/medium_gray"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- Formulario de nuevo evento -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardAddEvent"
@@ -139,14 +68,15 @@
                             android:layout_height="24dp"
                             android:src="@drawable/ic_event_default"
                             android:tint="@color/primary_blue"
-                            tools:ignore="UseAppTint" />
+                            tools:ignore="UseAppTint"
+                            android:contentDescription="@string/icono_relativo"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
-                            android:text="Agregar Nuevo Evento"
+                            android:text="@string/add_event"
                             android:textColor="@color/dark_gray"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -157,7 +87,9 @@
                             android:layout_height="24dp"
                             android:src="@drawable/ic_design"
                             android:tint="@color/medium_gray"
-                            tools:ignore="UseAppTint" />
+                            tools:ignore="UseAppTint"
+                            android:contentDescription="@string/icono_relativo"
+                            />
                     </LinearLayout>
 
                     <LinearLayout
@@ -205,8 +137,7 @@
                                 android:id="@+id/etDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:focusable="false"
-                                android:inputType="none"
+                                android:inputType="text"
                                 android:maxLines="1" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -323,7 +254,8 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="32dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:layout_width="120dp"
@@ -336,7 +268,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="No hay eventos"
+                    android:text="@string/no_event"
                     android:textColor="@color/medium_gray"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -345,7 +277,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Agrega tu primer evento para comenzar"
+                    android:text="@string/comment_add_event"
                     android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -359,13 +291,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Botón flotante -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabAddEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:text="Nuevo Evento"
-        app:icon="@drawable/ic_event_default" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
