@@ -1,5 +1,6 @@
 package com.mtovar.agendapersonal
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
 import com.mtovar.agendapersonal.model.Event
@@ -123,9 +125,12 @@ class MainActivity : AppCompatActivity() {
         eventView.findViewById<View>(R.id.btnQuitarEvento).setOnClickListener {
             showRemoveConfirmation(event)
         }
+
+
         return eventView
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showEventDetail(event: Event) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_event_detail, null)
         //Configurar vistas del dialogo
@@ -178,6 +183,22 @@ class MainActivity : AppCompatActivity() {
             handleAddEvent()
         }
 
+        binding.etDate.setOnClickListener {
+            showDatePicker()
+        }
+
+    }
+
+    private fun showDatePicker(){
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Selecciona la fecha del evento")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener {
+            binding.etDate.setText(datePicker.headerText)
+        }
+        datePicker.show(supportFragmentManager, "DATE_PICKER")
     }
 
     private fun handleAddEvent() {
