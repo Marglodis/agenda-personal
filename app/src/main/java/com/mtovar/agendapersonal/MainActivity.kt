@@ -3,10 +3,12 @@ package com.mtovar.agendapersonal
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
@@ -112,6 +114,11 @@ class MainActivity : AppCompatActivity() {
                 visibility = View.GONE
             }
         }
+
+        // Click en el evento para expandir/colapsar
+        eventView.setOnClickListener {
+            showEventDetail(event)
+        }
         //Botón quitar evento
         eventView.findViewById<View>(R.id.btnQuitarEvento).setOnClickListener {
             showRemoveConfirmation(event)
@@ -119,6 +126,36 @@ class MainActivity : AppCompatActivity() {
         return eventView
     }
 
+    private fun showEventDetail(event: Event) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_event_detail, null)
+        //Configurar vistas del dialogo
+        dialogView.findViewById<TextView>(R.id.tvDetailTitle).text = event.title
+        dialogView.findViewById<TextView>(R.id.tvDetailDate).text = event.date
+
+        val descripcionView = dialogView.findViewById<TextView>(R.id.tvDetailDescription)
+        if (!event.description.isNullOrBlank()) {
+            descripcionView.text = event.description
+            descripcionView.visibility = View.VISIBLE
+        } else {
+            descripcionView.text = "No hay descripción"
+            descripcionView.visibility = View.GONE
+        }
+
+        AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Cerrar", null)
+            .setNegativeButton("Eliminar") {
+                //cuando no se necesita usar una variable de un parámetro,
+                //se puede reemplazar su nombre con un guion bajo _ para indicar
+                //explícitamente "no me interesa este valor".
+                // cuando se presione el botón negativo, ignora los parámetros,
+                //y simplemente ejecuta showRemoveConfirmation(event)
+                _, _ -> showRemoveConfirmation(event)
+            }
+            .create()
+            .show()
+
+    }
     private fun showRemoveConfirmation(event: Event) {
         Snackbar.make(
             binding.root,
