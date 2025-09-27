@@ -10,4 +10,6 @@
     <string name="icono_relativo">Icono</string>
     <string name="add_event">Agregar Nuevo Evento</string>
     <string name="comment_add_event">Agrega tu primer evento para comenzar</string>
+    <string name="description">Descripción</string>
+    <string name="detail_description">Descripción completa del evento...</string>
 </resources>
