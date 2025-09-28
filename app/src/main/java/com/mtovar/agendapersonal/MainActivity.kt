@@ -11,16 +11,27 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.chip.Chip
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
 import com.mtovar.agendapersonal.model.Event
 import com.mtovar.agendapersonal.util.orEmptyIfNull
 import com.mtovar.agendapersonal.util.safeText
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     // Usando lateinit. posponemos la incializacion hasata el Oncreate (ViewBinding)
     private lateinit var binding: ActivityMainBinding
+
+    enum class DateFilter {
+        ALL, TODAY, UPCOMING
+    }
+
+    private var currentFilter = DateFilter.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +41,104 @@ class MainActivity : AppCompatActivity() {
 
         setupEventListeners()
         setupSearch()
+        setupChipFilters()
         displayEvents()
     }
 
+    private fun setupChipFilters() {
+        binding.chipAll.setOnClickListener {
+            selectChip(binding.chipAll, DateFilter.ALL)
+        }
+
+        binding.chipToday.setOnClickListener {
+            selectChip(binding.chipToday, DateFilter.TODAY)
+        }
+
+        binding.chipUpcoming.setOnClickListener {
+            selectChip(binding.chipUpcoming, DateFilter.UPCOMING)
+        }
+    }
+
+    private fun selectChip(selectedChip: Chip, filter: DateFilter) {
+        // Desmarcar los chips existentes
+        val chips = listOf(binding.chipAll, binding.chipToday, binding.chipUpcoming)
+        chips.forEach { chip ->
+            chip.isChecked = chip == selectedChip
+        }
+        // Actualizar el filtro actual
+        currentFilter = filter
+        // Mostrar eventos según el filtro seleccionado
+        applyFilters()
+    }
+
+    private fun applyFilters() {
+        val searchQuery = binding.etSearch.text?.toString().orEmptyIfNull()
+        val events = if (searchQuery.isEmpty()) {
+            EventManager.getSortedEvents()
+        } else {
+            EventManager.getEventsByTitle(searchQuery)
+        }
+        val filteredEvents = filterEventsByDate(events, currentFilter)
+        /*//binding.eventsListContainer.removeAllViews()
+        //if (filteredEvents.isEmpty()) {
+            showEmptyList()
+            return
+        }*/
+    displayFilteredEvents(filteredEvents, searchQuery)
+    }
+
+    private fun filterEventsByDate(events: List<Event>, filter: DateFilter): List<Event> {
+        if (filter == DateFilter.ALL) return events
+
+        val calendar = Calendar.getInstance()
+        val today = calendar.time
+
+        return events.filter { event ->
+            val eventDate = parseDate(event.date) ?: return@filter false
+
+            when (filter) {
+                DateFilter.TODAY -> isSameDay(eventDate, today)
+                DateFilter.UPCOMING -> eventDate.after(today)
+                DateFilter.ALL -> true
+            }
+        }
+    }
+
+    private fun parseDate(dateString: String): Date? {
+        return try {
+            // Intenta varios formatos comunes
+            // Según como está el codigo no necesitaria tantos formatos
+            // más que el ultimo  pues la app utiliza un datepicker para poder ingresar la fecha
+            val formats = listOf(
+                "dd/MM/yyyy",
+                "dd-MM-yyyy",
+                "yyyy-MM-dd",
+                "dd/MM/yy",
+                "MMM dd, yyyy"
+            )
+
+            for (format in formats) {
+                try {
+                    val sdf = SimpleDateFormat(format, Locale.getDefault())
+                    sdf.isLenient = false
+                    return sdf.parse(dateString)
+                } catch (e: Exception) {
+                    continue
+                }
+            }
+            null
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun isSameDay(date1: Date, date2: Date): Boolean {
+        val cal1 = Calendar.getInstance().apply { time = date1 }
+        val cal2 = Calendar.getInstance().apply { time = date2 }
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
     private fun setupSearch() {
         // Configurar búsqueda en tiempo real
         binding.etSearch.addTextChangedListener(object : TextWatcher {
@@ -40,12 +146,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                val query = s?.toString()?.trim().orEmptyIfNull()
-                if (query.isEmpty()) {
-                    displayEvents() // Mostrar todos los eventos
-                } else {
-                    displayFilteredEvents(query)
-                }
+                applyFilters()
             }
         })
 
@@ -55,30 +156,41 @@ class MainActivity : AppCompatActivity() {
         }*/
     }
 
-    private fun displayFilteredEvents(query: String) {
-        val filteredEvents = EventManager.getEventsByTitle(query)
+    private fun displayFilteredEvents(events: List<Event>,query: String) {
+       // val filteredEvents = EventManager.getEventsByTitle(query)
 
         // Limpiar contenedor antes de añadir los filtrados
-        binding.eventsListContainer.removeAllViews()
+       binding.eventsListContainer.removeAllViews()
 
-        if (filteredEvents.isEmpty()) {
-            showEmptySearchResults()
+        if (events.isEmpty()) {
+            showEmptySearchResults(query)
             return
         }
         binding.emptyStateContainer.visibility = View.GONE
         binding.eventsListContainer.visibility = View.VISIBLE
 
-        filteredEvents.forEach { event ->
+        events.forEach { event ->
             val eventView = createEventView(event)
             binding.eventsListContainer.addView(eventView)
         }
     }
 
-    private fun showEmptySearchResults() {
-        binding.emptyStateContainer.apply {
-           // text = "No se encontraron resultados para la búsqueda"
-            visibility = View.VISIBLE
+    private fun showEmptySearchResults(searchQuery: String) {
+        val filterText = when (currentFilter) {
+            DateFilter.ALL -> ""
+            DateFilter.TODAY -> "hoy"
+            DateFilter.UPCOMING -> "próximos"
         }
+        val message = if(searchQuery.isEmpty()) {
+            "No se encontraron eventos $filterText"
+        } else {
+            "No se encontraron resultados para la búsqueda: $searchQuery"
+        }
+
+        // Actualizar el TextView del estado vacío
+        binding.emptyStateTitle.text = message
+
+        binding.emptyStateContainer.visibility = View.VISIBLE
         binding.eventsListContainer.visibility = View.GONE
     }
 
