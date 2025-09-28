@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,23 +15,15 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
 import com.mtovar.agendapersonal.model.Event
-import com.mtovar.agendapersonal.util.DateUtils
 import com.mtovar.agendapersonal.util.EventFilter
 import com.mtovar.agendapersonal.util.UIHelpers.showError
 import com.mtovar.agendapersonal.util.UIHelpers.showSuccess
 import com.mtovar.agendapersonal.util.orEmptyIfNull
 import com.mtovar.agendapersonal.util.safeText
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     // Usando lateinit. posponemos la incializacion hasata el Oncreate (ViewBinding)
     private lateinit var binding: ActivityMainBinding
-
-
-
     private var currentFilter = EventFilter.DateFilter.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
         val filteredEvents = EventFilter.filterEventsByDate(events, currentFilter)
         // Mostrar eventos filtrados
-    displayFilteredEvents(filteredEvents, searchQuery)
+        displayFilteredEvents(filteredEvents, searchQuery)
     }
 
     private fun setupSearch() {
@@ -97,16 +88,16 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Botón para limpiar búsqueda
-       /* binding.btnClearSearch.setOnClickListener {
-            binding.etSearch.text?.clear()
-        }*/
+        /* binding.btnClearSearch.setOnClickListener {
+             binding.etSearch.text?.clear()
+         }*/
     }
 
-    private fun displayFilteredEvents(events: List<Event>,query: String) {
-       // val filteredEvents = EventManager.getEventsByTitle(query)
+    private fun displayFilteredEvents(events: List<Event>, query: String) {
+        // val filteredEvents = EventManager.getEventsByTitle(query)
 
         // Limpiar contenedor antes de añadir los filtrados
-       binding.eventsListContainer.removeAllViews()
+        binding.eventsListContainer.removeAllViews()
 
         if (events.isEmpty()) {
             showEmptySearchResults(query)
@@ -127,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             EventFilter.DateFilter.TODAY -> "hoy"
             EventFilter.DateFilter.UPCOMING -> "próximos"
         }
-        val message = if(searchQuery.isEmpty()) {
+        val message = if (searchQuery.isEmpty()) {
             "No se encontraron eventos $filterText"
         } else {
             "No se encontraron resultados para la búsqueda: $searchQuery"
@@ -148,8 +139,8 @@ class MainActivity : AppCompatActivity() {
             showEmptyList()
             return
         }
-           binding.emptyStateContainer.visibility = View.GONE
-           binding.eventsListContainer.visibility = View.VISIBLE
+        binding.emptyStateContainer.visibility = View.GONE
+        binding.eventsListContainer.visibility = View.VISIBLE
         events.forEach { event ->
             val eventView = createEventView(event)
             binding.eventsListContainer.addView(eventView)
@@ -213,12 +204,14 @@ class MainActivity : AppCompatActivity() {
                 //explícitamente "no me interesa este valor".
                 // cuando se presione el botón negativo, ignora los parámetros,
                 //y simplemente ejecuta showRemoveConfirmation(event)
-                _, _ -> showRemoveConfirmation(event)
+                    _, _ ->
+                showRemoveConfirmation(event)
             }
             .create()
             .show()
 
     }
+
     private fun showRemoveConfirmation(event: Event) {
         Snackbar.make(
             binding.root,
@@ -233,7 +226,7 @@ class MainActivity : AppCompatActivity() {
     private fun removeEvent(event: Event) {
         EventManager.removeEvent(event)
         displayEvents()
-        showSuccess(this,"Evento eliminado")
+        showSuccess(this, "Evento eliminado")
     }
 
     private fun setupEventListeners() {
@@ -247,7 +240,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun showDatePicker(){
+    private fun showDatePicker() {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecciona la fecha del evento")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -262,20 +255,21 @@ class MainActivity : AppCompatActivity() {
     private fun handleAddEvent() {
 
         val title = binding.etTitle.safeText()
-        val description = binding.etDescription.text?.toString().orEmptyIfNull() // Uso de la extensión de String
-            .takeIf { it.isNotBlank() } // Null Safety: puede ser null
+        val description =
+            binding.etDescription.text?.toString().orEmptyIfNull() // Uso de la extensión de String
+                .takeIf { it.isNotBlank() } // Null Safety: puede ser null
         val date = binding.etDate.safeText()
 
         // Validación mejorada con feedback a usuario
         when {
             title.isEmpty() -> {
-                showError(this,"El título es obligatorio")
+                showError(this, "El título es obligatorio")
                 binding.etTitle.requestFocus()
                 return
             }
 
             date.isEmpty() -> {
-                showError(this,"La fecha es obligatoria")
+                showError(this, "La fecha es obligatoria")
                 binding.etDate.requestFocus()
                 return
             }
@@ -289,10 +283,10 @@ class MainActivity : AppCompatActivity() {
         displayEvents()
 
         // Mostrar mensaje de éxito
-        showSuccess(this,"Evento agregado exitosamente")
+        showSuccess(this, "Evento agregado exitosamente")
     }
 
-    private fun clearFields(){
+    private fun clearFields() {
         binding.apply {
             etTitle.text?.clear()
             etDescription.text?.clear()
@@ -300,6 +294,7 @@ class MainActivity : AppCompatActivity() {
             etTitle.requestFocus() // Enfoca el cursor en el título
         }
     }
+
     private fun showEmptyList() {
         binding.emptyStateContainer.visibility = View.VISIBLE
         binding.eventsListContainer.visibility = View.GONE
