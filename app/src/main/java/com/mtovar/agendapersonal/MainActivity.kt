@@ -16,6 +16,10 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.mtovar.agendapersonal.databinding.ActivityMainBinding
 import com.mtovar.agendapersonal.model.Event
+import com.mtovar.agendapersonal.util.DateUtils
+import com.mtovar.agendapersonal.util.EventFilter
+import com.mtovar.agendapersonal.util.UIHelpers.showError
+import com.mtovar.agendapersonal.util.UIHelpers.showSuccess
 import com.mtovar.agendapersonal.util.orEmptyIfNull
 import com.mtovar.agendapersonal.util.safeText
 import java.text.SimpleDateFormat
@@ -27,11 +31,9 @@ class MainActivity : AppCompatActivity() {
     // Usando lateinit. posponemos la incializacion hasata el Oncreate (ViewBinding)
     private lateinit var binding: ActivityMainBinding
 
-    enum class DateFilter {
-        ALL, TODAY, UPCOMING
-    }
 
-    private var currentFilter = DateFilter.ALL
+
+    private var currentFilter = EventFilter.DateFilter.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,19 +49,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupChipFilters() {
         binding.chipAll.setOnClickListener {
-            selectChip(binding.chipAll, DateFilter.ALL)
+            selectChip(binding.chipAll, EventFilter.DateFilter.ALL)
         }
 
         binding.chipToday.setOnClickListener {
-            selectChip(binding.chipToday, DateFilter.TODAY)
+            selectChip(binding.chipToday, EventFilter.DateFilter.TODAY)
         }
 
         binding.chipUpcoming.setOnClickListener {
-            selectChip(binding.chipUpcoming, DateFilter.UPCOMING)
+            selectChip(binding.chipUpcoming, EventFilter.DateFilter.UPCOMING)
         }
     }
 
-    private fun selectChip(selectedChip: Chip, filter: DateFilter) {
+    private fun selectChip(selectedChip: Chip, filter: EventFilter.DateFilter) {
         // Desmarcar los chips existentes
         val chips = listOf(binding.chipAll, binding.chipToday, binding.chipUpcoming)
         chips.forEach { chip ->
@@ -78,67 +80,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             EventManager.getEventsByTitle(searchQuery)
         }
-        val filteredEvents = filterEventsByDate(events, currentFilter)
-        /*//binding.eventsListContainer.removeAllViews()
-        //if (filteredEvents.isEmpty()) {
-            showEmptyList()
-            return
-        }*/
+        val filteredEvents = EventFilter.filterEventsByDate(events, currentFilter)
+        // Mostrar eventos filtrados
     displayFilteredEvents(filteredEvents, searchQuery)
     }
 
-    private fun filterEventsByDate(events: List<Event>, filter: DateFilter): List<Event> {
-        if (filter == DateFilter.ALL) return events
-
-        val calendar = Calendar.getInstance()
-        val today = calendar.time
-
-        return events.filter { event ->
-            val eventDate = parseDate(event.date) ?: return@filter false
-
-            when (filter) {
-                DateFilter.TODAY -> isSameDay(eventDate, today)
-                DateFilter.UPCOMING -> eventDate.after(today)
-                DateFilter.ALL -> true
-            }
-        }
-    }
-
-    private fun parseDate(dateString: String): Date? {
-        return try {
-            // Intenta varios formatos comunes
-            // Según como está el codigo no necesitaria tantos formatos
-            // más que el ultimo  pues la app utiliza un datepicker para poder ingresar la fecha
-            val formats = listOf(
-                "dd/MM/yyyy",
-                "dd-MM-yyyy",
-                "yyyy-MM-dd",
-                "dd/MM/yy",
-                "MMM dd, yyyy"
-            )
-
-            for (format in formats) {
-                try {
-                    val sdf = SimpleDateFormat(format, Locale.getDefault())
-                    sdf.isLenient = false
-                    return sdf.parse(dateString)
-                } catch (e: Exception) {
-                    continue
-                }
-            }
-            null
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun isSameDay(date1: Date, date2: Date): Boolean {
-        val cal1 = Calendar.getInstance().apply { time = date1 }
-        val cal2 = Calendar.getInstance().apply { time = date2 }
-
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
-    }
     private fun setupSearch() {
         // Configurar búsqueda en tiempo real
         binding.etSearch.addTextChangedListener(object : TextWatcher {
@@ -177,9 +123,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEmptySearchResults(searchQuery: String) {
         val filterText = when (currentFilter) {
-            DateFilter.ALL -> ""
-            DateFilter.TODAY -> "hoy"
-            DateFilter.UPCOMING -> "próximos"
+            EventFilter.DateFilter.ALL -> ""
+            EventFilter.DateFilter.TODAY -> "hoy"
+            EventFilter.DateFilter.UPCOMING -> "próximos"
         }
         val message = if(searchQuery.isEmpty()) {
             "No se encontraron eventos $filterText"
@@ -287,7 +233,7 @@ class MainActivity : AppCompatActivity() {
     private fun removeEvent(event: Event) {
         EventManager.removeEvent(event)
         displayEvents()
-        showSuccess("Evento eliminado")
+        showSuccess(this,"Evento eliminado")
     }
 
     private fun setupEventListeners() {
@@ -323,13 +269,13 @@ class MainActivity : AppCompatActivity() {
         // Validación mejorada con feedback a usuario
         when {
             title.isEmpty() -> {
-                showError("El título es obligatorio")
+                showError(this,"El título es obligatorio")
                 binding.etTitle.requestFocus()
                 return
             }
 
             date.isEmpty() -> {
-                showError("La fecha es obligatoria")
+                showError(this,"La fecha es obligatoria")
                 binding.etDate.requestFocus()
                 return
             }
@@ -343,7 +289,7 @@ class MainActivity : AppCompatActivity() {
         displayEvents()
 
         // Mostrar mensaje de éxito
-        showSuccess("Evento agregado exitosamente")
+        showSuccess(this,"Evento agregado exitosamente")
     }
 
     private fun clearFields(){
@@ -359,11 +305,4 @@ class MainActivity : AppCompatActivity() {
         binding.eventsListContainer.visibility = View.GONE
     }
 
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showSuccess(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
 }
