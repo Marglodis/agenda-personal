@@ -274,8 +274,8 @@ class MainActivity : AppCompatActivity() {
                 return
             }
         }
-        // Crear y agregar evento
-        val event = Event(title = title, description = description, date = date)
+        // Crear y agregar evento usando el companion object
+        val event = Event.create(title = title, description = description, date = date)
         EventManager.addEvent(event)
 
         // Limpiar campos y actualizar vista
