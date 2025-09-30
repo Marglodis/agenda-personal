@@ -99,7 +99,7 @@ El objetivo es demostrar las características fundamentales de Kotlin, su intero
 <p float="left">
   <img src="screenshots/add_event_success_toast.png" alt="Agregar evento" width="200"/>
   <img src="screenshots/require_date_toast.png" alt="Fecha requerido" width="200"/>
-  <img src="screenshots/chip_all_events.png" alt="Todos los eventos" width="200"/>
-  <img src="screenshots/snackbar_delete_event.png" alt="Agregar evento" width="200"/>
-  <img src="screenshots/delete_event_toast.png" alt="Agregar evento" width="200"/>
+  <img src="screenshots/require_title_toast.png" alt="Requiere Título" width="200"/>
+  <img src="screenshots/snackbar_delete_event.png" alt="Snackbar eliminar evento" width="200"/>
+  <img src="screenshots/deleted_event_toast.png" alt="Toast evento eliminado" width="200"/>
 </p>
