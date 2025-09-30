@@ -86,16 +86,9 @@ class MainActivity : AppCompatActivity() {
                 applyFilters()
             }
         })
-
-        // Botón para limpiar búsqueda
-        /* binding.btnClearSearch.setOnClickListener {
-             binding.etSearch.text?.clear()
-         }*/
     }
 
     private fun displayFilteredEvents(events: List<Event>, query: String) {
-        // val filteredEvents = EventManager.getEventsByTitle(query)
-
         // Limpiar contenedor antes de añadir los filtrados
         binding.eventsListContainer.removeAllViews()
 
@@ -233,11 +226,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddEvent.setOnClickListener {
             handleAddEvent()
         }
-
         binding.etDate.setOnClickListener {
             showDatePicker()
         }
-
     }
 
     private fun showDatePicker() {
@@ -294,10 +285,8 @@ class MainActivity : AppCompatActivity() {
             etTitle.requestFocus() // Enfoca el cursor en el título
         }
     }
-
     private fun showEmptyList() {
         binding.emptyStateContainer.visibility = View.VISIBLE
         binding.eventsListContainer.visibility = View.GONE
     }
-
 }
